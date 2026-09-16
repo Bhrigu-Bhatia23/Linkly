@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 
-export default function LoginPage() {
+function LoginPageContent() {
   const { data: session } = useSession();
 
   const router = useRouter();
@@ -22,13 +22,11 @@ export default function LoginPage() {
 
     if (googleLogin === "success") {
       toast.success("Logged in with Google successfully!");
-
       router.replace("/login");
     }
 
     if (googleLogin === "error") {
       toast.error("Google login failed. Please try again.");
-
       router.replace("/login");
     }
   }, [searchParams, router]);
@@ -88,7 +86,6 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen bg-[#f7f3ee] text-[#171717]">
-
       {/* Background decoration */}
       <div className="pointer-events-none fixed left-[-120px] top-20 h-80 w-80 rounded-full bg-[#ffb4a8]/30 blur-3xl" />
 
@@ -96,14 +93,14 @@ export default function LoginPage() {
 
       {/* Login section */}
       <section className="relative mt-20 flex min-h-[calc(100vh-80px)] items-center justify-center px-6 py-12">
-
         <div className="w-full max-w-md">
 
           {/* Heading */}
           <div className="text-center">
-
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#ff5c5c] text-xl font-black text-white shadow-lg shadow-[#ff5c5c]/20">
-              {session?.user?.username ? session.user.username.charAt(0).toUpperCase() : "L"}
+              {session?.user?.username
+                ? session.user.username.charAt(0).toUpperCase()
+                : "L"}
             </div>
 
             <h1 className="mt-7 text-4xl font-black tracking-tight">
@@ -113,7 +110,6 @@ export default function LoginPage() {
             <p className="mt-3 text-gray-500">
               Log in to manage your Linkly page.
             </p>
-
           </div>
 
           {/* Card */}
@@ -148,7 +144,6 @@ export default function LoginPage() {
 
             {/* Divider */}
             <div className="my-7 flex items-center gap-4">
-
               <div className="h-px flex-1 bg-gray-200" />
 
               <span className="text-xs font-medium text-gray-400">
@@ -156,12 +151,10 @@ export default function LoginPage() {
               </span>
 
               <div className="h-px flex-1 bg-gray-200" />
-
             </div>
 
             {/* Email */}
             <div>
-
               <label
                 htmlFor="email"
                 className="mb-2 block text-sm font-semibold"
@@ -178,14 +171,11 @@ export default function LoginPage() {
                 placeholder="you@example.com"
                 className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-sm outline-none transition placeholder:text-gray-400 focus:border-[#ff5c5c] focus:bg-white focus:ring-4 focus:ring-[#ff5c5c]/10"
               />
-
             </div>
 
             {/* Password */}
             <div className="mt-5">
-
               <div className="mb-2 flex items-center justify-between">
-
                 <label
                   htmlFor="password"
                   className="text-sm font-semibold"
@@ -199,7 +189,6 @@ export default function LoginPage() {
                 >
                   Forgot password?
                 </Link>
-
               </div>
 
               <input
@@ -211,7 +200,6 @@ export default function LoginPage() {
                 placeholder="Enter your password"
                 className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-sm outline-none transition placeholder:text-gray-400 focus:border-[#ff5c5c] focus:bg-white focus:ring-4 focus:ring-[#ff5c5c]/10"
               />
-
             </div>
 
             {/* Login */}
@@ -225,7 +213,6 @@ export default function LoginPage() {
 
             {/* Signup */}
             <p className="mt-6 text-center text-sm text-gray-500">
-
               Don't have a Linkly account?{" "}
 
               <Link
@@ -234,14 +221,11 @@ export default function LoginPage() {
               >
                 Create one
               </Link>
-
             </p>
-
           </div>
 
           {/* Bottom text */}
           <p className="mt-7 text-center text-xs leading-5 text-gray-400">
-
             By continuing, you agree to Linkly's{" "}
 
             <Link
@@ -259,15 +243,18 @@ export default function LoginPage() {
             >
               Privacy Policy
             </Link>
-
             .
-
           </p>
-
         </div>
-
       </section>
-
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginPageContent />
+    </Suspense>
   );
 }
