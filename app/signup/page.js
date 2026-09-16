@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function SignupPage() {
+function SignupPageContent() {
   const { data: session } = useSession();
 
   const router = useRouter();
@@ -111,7 +111,9 @@ export default function SignupPage() {
           <div className="mt-20 text-center">
 
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#ff5c5c] text-xl font-black text-white shadow-lg shadow-[#ff5c5c]/20">
-              {session?.user?.username ? session.user.username.charAt(0).toUpperCase() : "L"}
+              {session?.user?.username
+                ? session.user.username.charAt(0).toUpperCase()
+                : "L"}
             </div>
 
             <h1 className="mt-7 text-4xl font-black tracking-tight">
@@ -353,5 +355,13 @@ export default function SignupPage() {
       </section>
 
     </main>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SignupPageContent />
+    </Suspense>
   );
 }
